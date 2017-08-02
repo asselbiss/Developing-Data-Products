@@ -1,0 +1,55 @@
+---
+title: "Developing Data Products - Week 2 Assignment"
+author: "Assel Bissembay"
+date: "July 30, 2017"
+output: ioslides_presentation
+---
+
+## United Nations Table of Locations (package "wpp2017")
+
+```{r, comment=""}
+library(wpp2017)
+data("UNlocations")
+```
+
+```{r, eval=FALSE}
+str(UNlocations)
+```
+
+## Subsetting data by location type (4 = Country/Area)
+
+```{r, comment=""}
+data_UN <- subset(UNlocations, UNlocations$location_type == "4")
+table(data_UN$area_name)
+```
+
+## Collecting UN Location Areas
+
+```{r, comment=""}
+data_area_collection <- table(data_UN$area_name)
+data_area_collection[data_area_collection == 0] <- NA
+data_area_collection <- data_area_collection[!(is.na(data_area_collection))]
+data_area_collection <- as.data.frame(data_area_collection)
+data_area_collection$lat <- c(-8.7832, 34.0479, 54.5260, -8.7832, 54.5260, -22.7359)
+data_area_collection$lng <- c(34.5085, 100.6197, 15.2551, -55.4915, -105.2551, 140.0188)
+names(data_area_collection)[1] <- paste("Regions")
+names(data_area_collection)[2] <- paste("# of UN locations")
+data_area_collection
+```
+
+## UN Locations Map by Area
+
+```{r, echo=FALSE, comment=""}
+library(leaflet)
+data_area_collection %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addCircles(weight = 1, radius = sqrt(data_area_collection$`# of UN locations`) * 3* 10^5) %>% 
+  addMarkers(lat = c(-8.7832, 34.0479, 54.5260, -8.7832, 54.5260, -22.7359), 
+             lng = c(34.5085, 100.6197, 15.2551, -55.4915, -105.2551, 140.0188), 
+             popup = c("Africa \n 58", "Asia \n 51", "Europe \n 48", 
+                       "Latin America and the Caribbean \n 48", "Northern America \n 5",                        "Oceania \n 23"))
+```
+
+
+
