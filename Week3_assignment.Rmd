@@ -1,0 +1,43 @@
+---
+title: "Developing Data Products - Week 3 Assignment"
+author: "Assel Bissembay"
+date: "August 3, 2017"
+output: ioslides_presentation
+---
+
+## mtcars data
+```{r, comment = ""}
+library(datasets)
+data("mtcars")
+```
+
+```{r, eval=FALSE}
+str(mtcars)
+```
+
+```{r, comment = ""}
+library(plotly)
+```
+
+## MPG in Scatterplot
+```{r, echo=FALSE}
+mtcars$gear <- factor(mtcars$gear, levels = c(3, 4, 5), 
+                      labels = c("gear = 3", "gear = 4", "gear = 5"))
+mtcars$am <- factor(mtcars$am, levels = c(0, 1), labels = c("automatic", "manual"))
+plot_ly(mtcars, x = ~disp, y = ~mpg, mode = "markers", type = "scatter", color = ~as.factor(mtcars$gear), size = ~wt, split = ~as.factor(mtcars$am))
+```
+
+## MPG in Boxplots
+```{r, echo=FALSE}
+plot_ly(mtcars, y = ~mpg, color = ~(as.factor(cyl)), type = "box")
+```
+
+##  MPG in Surface
+```{r, echo=FALSE}
+mtcars$mpg <- as.vector(mtcars$mpg)
+data <- matrix(sort(mtcars$mpg), nrow = 8, ncol = 4)
+plot_ly(z = data, type = "surface")
+```
+
+
+
